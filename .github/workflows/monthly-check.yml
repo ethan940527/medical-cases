@@ -1,0 +1,25 @@
+name: 새 판례 확인
+
+on:
+  schedule:
+    - cron: "0 0 1 * *"   # 매달 1일 오전 9시(한국 시간)
+  workflow_dispatch:       # Actions 화면에서 직접 실행할 수도 있어요
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: 새 판례 확인
+        env:
+          LAW_OC: ${{ secrets.LAW_OC }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node check-new.mjs
